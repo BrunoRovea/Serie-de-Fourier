@@ -1,27 +1,26 @@
 clear; clc; close all;
 tic;
-%=========================Variï¿½veis de entrada============================%
-T0 = 0.1; %Perï¿½odo fundamental do sinal
-N = 10000; %Nï¿½mero de termos da sï¿½rie
-Ne = 10; %Numero de harmï¿½nicos no espectro em frequï¿½ncia
+%=========================Vari�veis de entrada============================%
+T0 = 0.1; %Per�odo fundamental do sinal
+N = 1000; %N�mero de termos da s�rie
+Ne = 10; %Numero de harm�nicos no espectro em frequ�ncia
 
 
 
-%=========================Caracterï¿½stica do sinal=========================%
-f0 = 1/T0; %Frequï¿½ncia fudamental em Hz
-W0 = 2*pi*f0; %Frequï¿½ncia angular fundamental em Rad/s
+%=========================Caracter�stica do sinal=========================%
+f0 = 1/T0; %Frequ�ncia fudamental em Hz
+W0 = 2*pi*f0; %Frequ�ncia angular fundamental em Rad/s
 
 
 
-%===================Cï¿½lculo dos coeficientes da Sï¿½rie=====================%
-%Definindo o sinal no tempo
+%===================C�lculo dos coeficientes da S�rie=====================%
 syms t;syms n;
-x1 = (1);
-I1 = [0, T0/2];
-x2 = (0);
-I2 = [T0/2 T0];
+x1 = (58/3 + 80*t);
+I1 = [-1/60 2/60];
+x2 = (74/3 - 80*t);
+I2 = [2/60 5/60];
 
-%Resolvo a integral simbï¿½lica definida
+%Resolvo a integral simb�lica definida
 aa0  = (1/T0)*int(x1,t, I1)*t;
 aan = (2/T0)*int(x1*cos(n*W0*t),t, I1);
 bbn = (2/T0)*int(x1*sin(n*W0*t),t, I1);
@@ -33,15 +32,15 @@ bbn = bbn + (2/T0)*int(x2*sin(n*W0*t),t, I2);
 ddn = 1/T0*int(x1*exp(-1i*n*W0*t),t, I2);
 
 
-%Converte-se as funï¿½ï¿½es de variï¿½veis simbï¿½licas para funï¿½ï¿½es tipo handle
-%Funï¿½ï¿½es que dependem de n
+%Converte-se as fun��es de vari�veis simb�licas para fun��es tipo handle
+%Fun��es que dependem de n
 a0 = matlabFunction(aa0);
 a0 = a0(1);
 an = matlabFunction(aan);
 bn = matlabFunction(bbn);
 dn = matlabFunction(ddn);
 
-%============Cï¿½lculo dos coeficientes e determinaï¿½ï¿½o da sï¿½rie=============%
+%============C�lculo dos coeficientes e determina��o da s�rie=============%
 x = @(t) a0;% Ou d0
 a = zeros(1, N);
 b = zeros(1, N);
@@ -69,13 +68,13 @@ for n = 1: N
    end
    
    phi(n) = atan(b(n)/a(n));
-   % Corrigindo o possï¿½vel erro da divisï¿½o 0/0 no cï¿½lculo de phi
+   % Corrigindo o poss�vel erro da divis�o 0/0 no c�lculo de phi
    if((a(n) == 0) && (b(n) == 0))
       phi(n) = 0; 
    end
    
-   %Determinaï¿½ï¿½o da funï¿½ï¿½o
-   x = @(t) x(t) + a(n)*cos(n*W0*t) + b(n)*sin(n*W0*t);%Forma trigonomï¿½trica
+   %Determina��o da fun��o
+   x = @(t) x(t) + a(n)*cos(n*W0*t) + b(n)*sin(n*W0*t);%Forma trigonom�trica
    %x = @(t) x(t) + c(n)*cos(n*W0*t - phi(n));% Forma compacta
    %x = @(t) x(t) + d(n)*exp(1i*n*W0*t);% Forma complexa
    %x = @(t) x(t) + conj(d(n))*exp(-1i*n*W0*t);% n assume valor de -n nessa linha
@@ -84,7 +83,7 @@ end
 
 
 
-%================================Grï¿½ficos=================================%
+%================================Gr�ficos=================================%
 n = 1:1:Ne; %Abscissa do espectro
 t = linspace(-2*T0, 2*T0, N); %Vetor tempo
 % Consertar Eixos
@@ -92,13 +91,13 @@ t = linspace(-2*T0, 2*T0, N); %Vetor tempo
 %Sinal no Tempo
 figure(1);
 plot(t, x(t));
-title('Sinal x(t) no domï¿½nio do tempo');
+title('Sinal x(t) no dom�nio do tempo');
 xlabel('Tempo[s]'); ylabel('x(t)[v]');
 % legend('1000 pontos');
 grid on;
 
 
-%Espectro em frequï¿½ncia
+%Espectro em frequ�ncia
 
 %an
 figure(2);
@@ -106,7 +105,7 @@ a(N+1) = a0;
 plot(0, a0, 'Xr');
 hold on;
 plot(n, an(n),'Xr');
-title('Espectro em frequï¿½ncia do sinal x(t)');
+title('Espectro em frequ�ncia do sinal x(t)');
 xlabel('nW0'); ylabel('Coeficientes an');
 % legend('1000 pontos');
 if(min(a) == max(a))
@@ -120,7 +119,7 @@ grid on;
 %bn
 figure(3);
 plot(n, bn(n),'Xr');
-title('Espectro em frequï¿½ncia do sinal x(t)');
+title('Espectro em frequ�ncia do sinal x(t)');
 xlabel('nW0'); ylabel('Coeficientes bn');
 % legend('1000 pontos');
 if(min(b) == max(b))
@@ -137,7 +136,7 @@ c(N+1) = a0;
 plot(0, a0, 'Xr');
 hold on;
 plot(n, c(n),'Xr');
-title('Espectro em frequï¿½ncia do sinal x(t)');
+title('Espectro em frequ�ncia do sinal x(t)');
 xlabel('nW0'); ylabel('Coeficientes cn');
 % legend('1000 pontos');
 if(min(c) == max(c))
@@ -153,8 +152,8 @@ figure(5);
 plot(0, a0, 'Xr');
 hold on;
 plot(n, abs(d(n)),'Xr');
-title('Espectro em frequï¿½ncia do sinal x(t)');
-xlabel('nW0'); ylabel('Mï¿½dulo dos coefcientes dn');
+title('Espectro em frequ�ncia do sinal x(t)');
+xlabel('nW0'); ylabel('M�dulo dos coefcientes dn');
 % legend('1000 pontos');
 if(min(abs(d(n))) == max(abs(d(n))))
    axis([0 Ne+0.8 -1 1]);
